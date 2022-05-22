@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DHT.Server.Service {
-	public static class ServerLauncher {
+	static class ServerLauncher {
 		private static readonly Log Log = Log.ForType(typeof(ServerLauncher));
 
 		private static IWebHost? Server { get; set; } = null;

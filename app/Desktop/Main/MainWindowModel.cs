@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using DHT.Desktop.Dialogs.Message;
 using DHT.Desktop.Main.Screens;
-using DHT.Desktop.Server;
 using DHT.Server.Database;
+using DHT.Server.Service;
 using DHT.Utils.Models;
 
 namespace DHT.Desktop.Main {
@@ -61,13 +61,8 @@ namespace DHT.Desktop.Main {
 				window.Opened += OnWindowOpened;
 			}
 
-			if (args.ServerPort != null) {
-				ServerManager.Port = args.ServerPort.Value;
-			}
-
-			if (args.ServerToken != null) {
-				ServerManager.Token = args.ServerToken;
-			}
+			defaultServerPort = args.ServerPort ?? ServerUtils.FindAvailablePort(50000, 60000);
+			defaultServerToken = args.ServerToken ?? ServerUtils.GenerateRandomToken(20);
 		}
 
 		private async void WelcomeScreenModelOnPropertyChanged(object? sender, PropertyChangedEventArgs e) {

@@ -5,7 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using DHT.Desktop.Dialogs.Message;
 using DHT.Desktop.Discord;
-using DHT.Desktop.Server;
+using DHT.Server.Service;
 using DHT.Utils.Models;
 using static DHT.Desktop.Program;
 
@@ -34,12 +34,14 @@ namespace DHT.Desktop.Main.Pages {
 		}
 
 		private readonly Window window;
+		private readonly ServerManager serverManager;
 
 		[Obsolete("Designer")]
-		public TrackingPageModel() : this(null!) {}
+		public TrackingPageModel() : this(null!, ServerManager.Dummy) {}
 
-		public TrackingPageModel(Window window) {
+		public TrackingPageModel(Window window, ServerManager serverManager) {
 			this.window = window;
+			this.serverManager = serverManager;
 		}
 
 		public async Task Initialize() {
@@ -55,8 +57,8 @@ namespace DHT.Desktop.Main.Pages {
 
 		public async Task<bool> OnClickCopyTrackingScript() {
 			string bootstrap = await Resources.ReadTextAsync("Tracker/bootstrap.js");
-			string script = bootstrap.Replace("= 0; /*[PORT]*/", "= " + ServerManager.Port + ";")
-			                         .Replace("/*[TOKEN]*/", HttpUtility.JavaScriptStringEncode(ServerManager.Token))
+			string script = bootstrap.Replace("= 0; /*[PORT]*/", "= " + serverManager.Port + ";")
+			                         .Replace("/*[TOKEN]*/", HttpUtility.JavaScriptStringEncode(serverManager.Token))
 			                         .Replace("/*[IMPORTS]*/", await Resources.ReadJoinedAsync("Tracker/scripts/", '\n'))
 			                         .Replace("/*[CSS-CONTROLLER]*/", await Resources.ReadTextAsync("Tracker/styles/controller.css"))
 			                         .Replace("/*[CSS-SETTINGS]*/", await Resources.ReadTextAsync("Tracker/styles/settings.css"));

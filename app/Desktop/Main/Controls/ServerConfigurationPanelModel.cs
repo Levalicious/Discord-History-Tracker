@@ -1,8 +1,6 @@
 using System;
 using Avalonia.Controls;
 using DHT.Desktop.Dialogs.Message;
-using DHT.Desktop.Server;
-using DHT.Server.Database;
 using DHT.Server.Service;
 using DHT.Utils.Models;
 
@@ -28,7 +26,7 @@ namespace DHT.Desktop.Main.Controls {
 			}
 		}
 
-		public bool HasMadeChanges => ServerManager.Port.ToString() != InputPort || ServerManager.Token != InputToken;
+		public bool HasMadeChanges => serverManager.Port.ToString() != InputPort || serverManager.Token != InputToken;
 
 		private bool isToggleServerButtonEnabled = true;
 
@@ -45,21 +43,21 @@ namespace DHT.Desktop.Main.Controls {
 		private readonly ServerManager serverManager;
 
 		[Obsolete("Designer")]
-		public ServerConfigurationPanelModel() : this(null!, new ServerManager(DummyDatabaseFile.Instance)) {}
+		public ServerConfigurationPanelModel() : this(null!, ServerManager.Dummy) {}
 
 		public ServerConfigurationPanelModel(Window window, ServerManager serverManager) {
 			this.window = window;
 			this.serverManager = serverManager;
-			this.inputPort = ServerManager.Port.ToString();
-			this.inputToken = ServerManager.Token;
+			this.inputPort = serverManager.Port.ToString();
+			this.inputToken = serverManager.Token;
 		}
 
 		public void Initialize() {
-			ServerLauncher.ServerStatusChanged += ServerLauncherOnServerStatusChanged;
+			serverManager.ServerStatusChanged += ServerLauncherOnServerStatusChanged;
 		}
 
 		public void Dispose() {
-			ServerLauncher.ServerStatusChanged -= ServerLauncherOnServerStatusChanged;
+			serverManager.ServerStatusChanged -= ServerLauncherOnServerStatusChanged;
 		}
 
 		private void ServerLauncherOnServerStatusChanged(object? sender, EventArgs e) {
@@ -109,8 +107,8 @@ namespace DHT.Desktop.Main.Controls {
 		}
 
 		public void OnClickCancelChanges() {
-			InputPort = ServerManager.Port.ToString();
-			InputToken = ServerManager.Token;
+			InputPort = serverManager.Port.ToString();
+			InputToken = serverManager.Token;
 		}
 	}
 }

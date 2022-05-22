@@ -2,8 +2,8 @@ using System;
 using Avalonia.Controls;
 using DHT.Desktop.Dialogs.Message;
 using DHT.Desktop.Main.Controls;
-using DHT.Desktop.Server;
 using DHT.Server.Database;
+using DHT.Server.Service;
 using DHT.Utils.Models;
 
 namespace DHT.Desktop.Main.Pages {
@@ -14,7 +14,7 @@ namespace DHT.Desktop.Main.Pages {
 		private readonly IDatabaseFile db;
 
 		[Obsolete("Designer")]
-		public AdvancedPageModel() : this(null!, DummyDatabaseFile.Instance, new ServerManager(DummyDatabaseFile.Instance)) {}
+		public AdvancedPageModel() : this(null!, DummyDatabaseFile.Instance, ServerManager.Dummy) {}
 
 		public AdvancedPageModel(Window window, IDatabaseFile db, ServerManager serverManager) {
 			this.window = window;

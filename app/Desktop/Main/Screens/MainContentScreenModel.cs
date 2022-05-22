@@ -4,7 +4,6 @@ using Avalonia.Controls;
 using DHT.Desktop.Dialogs.Message;
 using DHT.Desktop.Main.Controls;
 using DHT.Desktop.Main.Pages;
-using DHT.Desktop.Server;
 using DHT.Server.Database;
 using DHT.Server.Service;
 using DHT.Utils.Logging;
@@ -53,14 +52,14 @@ namespace DHT.Desktop.Main.Screens {
 
 		public MainContentScreenModel(Window window, IDatabaseFile db) {
 			this.window = window;
-			this.serverManager = new ServerManager(db);
-
-			ServerLauncher.ServerManagementExceptionCaught += ServerLauncherOnServerManagementExceptionCaught;
+			
+			serverManager = new ServerManager(db);
+			serverManager.ServerManagementExceptionCaught += ServerLauncherOnServerManagementExceptionCaught;
 
 			DatabasePageModel = new DatabasePageModel(window, db);
 			DatabasePage = new DatabasePage { DataContext = DatabasePageModel };
 
-			TrackingPageModel = new TrackingPageModel(window);
+			TrackingPageModel = new TrackingPageModel(window, serverManager);
 			TrackingPage = new TrackingPage { DataContext = TrackingPageModel };
 
 			ViewerPageModel = new ViewerPageModel(window, db);
@@ -91,7 +90,7 @@ namespace DHT.Desktop.Main.Screens {
 		}
 
 		public void Dispose() {
-			ServerLauncher.ServerManagementExceptionCaught -= ServerLauncherOnServerManagementExceptionCaught;
+			serverManager.ServerManagementExceptionCaught -= ServerLauncherOnServerManagementExceptionCaught;
 			ViewerPageModel.Dispose();
 			serverManager.Dispose();
 		}
