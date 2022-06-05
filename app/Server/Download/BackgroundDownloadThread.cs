@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Concurrent;
-using System.Net;
+using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using DHT.Server.Database;
 using DHT.Utils.Logging;
 using DHT.Utils.Models;
@@ -66,13 +67,13 @@ namespace DHT.Server.Download {
 				}
 			}
 
-			private readonly WebClient client = new ();
+			private readonly HttpClient client = new ();
 
 			public ThreadInstance() {
-				client.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36";
+				client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36");
 			}
 
-			public void Work(object? obj) {
+			public async void Work(object? obj) {
 				var parameters = (Parameters) obj!;
 
 				var cancellationTokenSource = parameters.CancellationTokenSource;
@@ -80,8 +81,6 @@ namespace DHT.Server.Download {
 
 				var db = parameters.Db;
 				var queue = new ConcurrentQueue<DownloadItem>();
-
-				cancellationToken.Register(client.CancelAsync);
 
 				try {
 					while (!cancellationToken.IsCancellationRequested) {
@@ -92,15 +91,17 @@ namespace DHT.Server.Download {
 							Log.Debug("Downloading " + url + "...");
 
 							try {
-								db.AddDownload(Data.Download.NewSuccess(url, client.DownloadData(url)));
-							} catch (WebException e) {
-								db.AddDownload(Data.Download.NewFailure(url, e.Response is HttpWebResponse response ? response.StatusCode : null, item.Size));
+								db.AddDownload(Data.Download.NewSuccess(url, await client.GetByteArrayAsync(url, cancellationToken)));
+							} catch (HttpRequestException e) {
+								db.AddDownload(Data.Download.NewFailure(url, e.StatusCode, item.Size));
 								Log.Error(e);
 							} finally {
 								parameters.FireOnItemFinished(item);
 							}
 						}
 					}
+				} catch (TaskCanceledException) {
+					//
 				} catch (OperationCanceledException) {
 					//
 				} catch (ObjectDisposedException) {

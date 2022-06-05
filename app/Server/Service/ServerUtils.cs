@@ -26,7 +26,7 @@ namespace DHT.Server.Service {
 
 		public static string GenerateRandomToken(int length) {
 			byte[] bytes = new byte[length * 3 / 2]; // Extra bytes compensate for filtered out characters.
-			var rng = new RNGCryptoServiceProvider();
+			var rng = RandomNumberGenerator.Create();
 
 			string token = "";
 			while (token.Length < length) {
