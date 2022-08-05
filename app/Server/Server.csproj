@@ -20,6 +20,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="999.0.0-build.0.g0d941a6a62" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.7" />
   </ItemGroup>
   <ItemGroup>

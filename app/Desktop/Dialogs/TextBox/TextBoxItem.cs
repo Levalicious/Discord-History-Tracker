@@ -1,24 +1,23 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
-using DHT.Utils.Models;
+using System.Diagnostics.CodeAnalysis;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DHT.Desktop.Dialogs.TextBox {
-	class TextBoxItem : BaseModel, INotifyDataErrorInfo {
+	partial class TextBoxItem : ObservableObject, INotifyDataErrorInfo {
 		public string Title { get; init; } = "";
 		public object? Item { get; init; } = null;
 		
 		public Func<string, bool> ValidityCheck { get; init; } = static _ => true;
 		public bool IsValid => ValidityCheck(Value);
 
+		[ObservableProperty]
 		private string value = string.Empty;
 
-		public string Value {
-			get => this.value;
-			set {
-				Change(ref this.value, value);
-				ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Value)));
-			}
+		[SuppressMessage("ReSharper", "UnusedParameterInPartialMethod")]
+		partial void OnValueChanged(string value) {
+			ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Value)));
 		}
 
 		public IEnumerable GetErrors(string? propertyName) {

@@ -5,10 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using DHT.Server.Database;
 using DHT.Utils.Logging;
-using DHT.Utils.Models;
 
 namespace DHT.Server.Download {
-	public sealed class BackgroundDownloadThread : BaseModel {
+	public sealed class BackgroundDownloadThread {
 		private static readonly Log Log = Log.ForType<BackgroundDownloadThread>();
 
 		public event EventHandler<DownloadItem>? OnItemFinished {

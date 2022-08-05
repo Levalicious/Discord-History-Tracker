@@ -1,20 +1,14 @@
 using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DHT.Server.Database;
-using DHT.Utils.Models;
 
 namespace DHT.Desktop.Main.Controls {
-	sealed class StatusBarModel : BaseModel {
+	sealed partial class StatusBarModel : ObservableObject {
 		public DatabaseStatistics DatabaseStatistics { get; }
 
-		private Status status = Status.Stopped;
-
-		public Status CurrentStatus {
-			get => status;
-			set {
-				status = value;
-				OnPropertyChanged(nameof(StatusText));
-			}
-		}
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(StatusText))]
+		private Status currentStatus = Status.Stopped;
 
 		public string StatusText {
 			get {

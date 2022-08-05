@@ -3,25 +3,21 @@ using System.Threading.Tasks;
 using System.Web;
 using Avalonia;
 using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DHT.Desktop.Dialogs.Message;
 using DHT.Desktop.Discord;
 using DHT.Desktop.Server;
-using DHT.Utils.Models;
 using static DHT.Desktop.Program;
 
 namespace DHT.Desktop.Main.Pages {
-	sealed class TrackingPageModel : BaseModel {
+	sealed partial class TrackingPageModel : ObservableObject {
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(ToggleAppDevToolsButtonText))]
 		private bool areDevToolsEnabled;
 
-		private bool AreDevToolsEnabled {
-			get => areDevToolsEnabled;
-			set {
-				Change(ref areDevToolsEnabled, value);
-				OnPropertyChanged(nameof(ToggleAppDevToolsButtonText));
-			}
-		}
-
-		public bool IsToggleAppDevToolsButtonEnabled { get; private set; } = true;
+		[ObservableProperty(Setter = Access.Private)]
+		[NotifyPropertyChangedFor(nameof(ToggleAppDevToolsButtonText))]
+		private bool isToggleAppDevToolsButtonEnabled = true;
 
 		public string ToggleAppDevToolsButtonText {
 			get {
@@ -49,7 +45,6 @@ namespace DHT.Desktop.Main.Pages {
 			}
 			else {
 				IsToggleAppDevToolsButtonEnabled = false;
-				OnPropertyChanged(nameof(IsToggleAppDevToolsButtonEnabled));
 			}
 		}
 

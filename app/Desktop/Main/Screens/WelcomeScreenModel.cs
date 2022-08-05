@@ -2,17 +2,16 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DHT.Desktop.Common;
 using DHT.Desktop.Dialogs.Message;
 using DHT.Server.Database;
-using DHT.Utils.Models;
 
 namespace DHT.Desktop.Main.Screens {
-	sealed class WelcomeScreenModel : BaseModel, IDisposable {
+	sealed class WelcomeScreenModel : ObservableObject, IDisposable {
 		public string Version => Program.Version;
 
 		public IDatabaseFile? Db { get; private set; }
-		public bool HasDatabase => Db != null;
 
 		private readonly Window window;
 
@@ -42,9 +41,7 @@ namespace DHT.Desktop.Main.Screens {
 
 			dbFilePath = path;
 			Db = await DatabaseGui.TryOpenOrCreateDatabaseFromPath(path, window, CheckCanUpgradeDatabase);
-
 			OnPropertyChanged(nameof(Db));
-			OnPropertyChanged(nameof(HasDatabase));
 		}
 
 		private async Task<bool> CheckCanUpgradeDatabase() {
@@ -54,7 +51,6 @@ namespace DHT.Desktop.Main.Screens {
 		public void CloseDatabase() {
 			Dispose();
 			OnPropertyChanged(nameof(Db));
-			OnPropertyChanged(nameof(HasDatabase));
 		}
 
 		public async void ShowAboutDialog() {

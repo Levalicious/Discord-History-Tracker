@@ -16,10 +16,9 @@ using DHT.Server.Data;
 using DHT.Server.Database;
 using DHT.Server.Database.Import;
 using DHT.Utils.Logging;
-using DHT.Utils.Models;
 
 namespace DHT.Desktop.Main.Pages {
-	sealed class DatabasePageModel : BaseModel {
+	sealed class DatabasePageModel {
 		private static readonly Log Log = Log.ForType<DatabasePageModel>();
 
 		public IDatabaseFile Db { get; }

@@ -4,19 +4,21 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DHT.Desktop.Dialogs.Message;
 using DHT.Desktop.Main.Screens;
 using DHT.Desktop.Server;
 using DHT.Server.Database;
-using DHT.Utils.Models;
 
 namespace DHT.Desktop.Main {
-	sealed class MainWindowModel : BaseModel, IDisposable {
+	sealed partial class MainWindowModel : ObservableObject, IDisposable {
 		private const string DefaultTitle = "Discord History Tracker";
 
-		public string Title { get; private set; } = DefaultTitle;
+		[ObservableProperty(Setter = Access.Private)]
+		private string title = DefaultTitle;
 
-		public UserControl CurrentScreen { get; private set; }
+		[ObservableProperty(Setter = Access.Private)]
+		private UserControl currentScreen;
 		
 		private readonly WelcomeScreen welcomeScreen;
 		private readonly WelcomeScreenModel welcomeScreenModel;
@@ -36,7 +38,7 @@ namespace DHT.Desktop.Main {
 
 			welcomeScreenModel = new WelcomeScreenModel(window);
 			welcomeScreen = new WelcomeScreen { DataContext = welcomeScreenModel };
-			CurrentScreen = welcomeScreen;
+			currentScreen = welcomeScreen;
 
 			welcomeScreenModel.PropertyChanged += WelcomeScreenModelOnPropertyChanged;
 
@@ -94,9 +96,6 @@ namespace DHT.Desktop.Main {
 					mainContentScreen = new MainContentScreen { DataContext = mainContentScreenModel };
 					CurrentScreen = mainContentScreen;
 				}
-
-				OnPropertyChanged(nameof(CurrentScreen));
-				OnPropertyChanged(nameof(Title));
 
 				window.Focus();
 			}

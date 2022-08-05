@@ -1,33 +1,21 @@
 using System;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DHT.Desktop.Common;
-using DHT.Utils.Models;
 
 namespace DHT.Desktop.Dialogs.Progress {
-	sealed class ProgressDialogModel : BaseModel {
+	sealed partial class ProgressDialogModel : ObservableObject {
 		public string Title { get; init; } = "";
 
+		[ObservableProperty(Setter = Access.Private)]
 		private string message = "";
 
-		public string Message {
-			get => message;
-			private set => Change(ref message, value);
-		}
-
+		[ObservableProperty(Setter = Access.Private)]
 		private string items = "";
 
-		public string Items {
-			get => items;
-			private set => Change(ref items, value);
-		}
-
+		[ObservableProperty(Setter = Access.Private)]
 		private int progress = 0;
-
-		public int Progress {
-			get => progress;
-			private set => Change(ref progress, value);
-		}
 
 		private readonly TaskRunner? task;
 

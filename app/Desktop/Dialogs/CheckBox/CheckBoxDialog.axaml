@@ -37,7 +37,7 @@
             <ItemsRepeater Items="{Binding Items}">
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate>
-                        <CheckBox IsChecked="{Binding Checked}">
+                        <CheckBox IsChecked="{Binding IsChecked}">
                             <Label>
                                 <TextBlock Text="{Binding Title}" TextWrapping="Wrap" />
                             </Label>

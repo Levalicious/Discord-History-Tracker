@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DHT.Desktop.Common;
 using DHT.Desktop.Main.Controls;
 using DHT.Server.Data;
@@ -8,27 +9,24 @@ using DHT.Server.Data.Aggregations;
 using DHT.Server.Data.Filters;
 using DHT.Server.Database;
 using DHT.Server.Download;
-using DHT.Utils.Models;
 using DHT.Utils.Tasks;
 
 namespace DHT.Desktop.Main.Pages {
-	sealed class AttachmentsPageModel : BaseModel, IDisposable {
+	sealed partial class AttachmentsPageModel : ObservableObject, IDisposable {
 		private static readonly DownloadItemFilter EnqueuedItemFilter = new() {
 			IncludeStatuses = new HashSet<DownloadStatus> {
 				DownloadStatus.Enqueued
 			}
 		};
 
-		private bool isThreadDownloadButtonEnabled = true;
+		[ObservableProperty]
+		private bool isToggleDownloadButtonEnabled = true;
 
 		public string ToggleDownloadButtonText => downloadThread == null ? "Start Downloading" : "Stop Downloading";
 
-		public bool IsToggleDownloadButtonEnabled {
-			get => isThreadDownloadButtonEnabled;
-			set => Change(ref isThreadDownloadButtonEnabled, value);
-		}
-
-		public string DownloadMessage { get; set; } = "";
+		[ObservableProperty(Setter = Access.Private)]
+		private string downloadMessage = "";
+		
 		public double DownloadProgress => allItemsCount is null or 0 ? 0.0 : 100.0 * doneItemsCount / allItemsCount.Value;
 
 		public AttachmentFilterPanelModel FilterModel { get; }
@@ -127,8 +125,6 @@ namespace DHT.Desktop.Main.Pages {
 
 		private void UpdateDownloadMessage() {
 			DownloadMessage = IsDownloading ? doneItemsCount.Format() + " / " + (allItemsCount?.Format() ?? "?") : "";
-
-			OnPropertyChanged(nameof(DownloadMessage));
 			OnPropertyChanged(nameof(DownloadProgress));
 		}
 

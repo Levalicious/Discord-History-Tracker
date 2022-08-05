@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using DHT.Utils.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DHT.Desktop.Dialogs.TextBox {
-	class TextBoxDialogModel : BaseModel {
+	class TextBoxDialogModel : ObservableObject {
 		public string Title { get; init; } = "";
 		public string Description { get; init; } = "";
 
@@ -24,6 +24,8 @@ namespace DHT.Desktop.Dialogs.TextBox {
 				foreach (var item in items) {
 					item.ErrorsChanged += OnItemErrorsChanged;
 				}
+
+				OnPropertyChanged(nameof(HasErrors));
 			}
 		}
 		

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DHT.Desktop.Common;
 using DHT.Desktop.Dialogs.Message;
 using DHT.Desktop.Main.Controls;
@@ -16,24 +17,17 @@ using DHT.Server.Data.Filters;
 using DHT.Server.Database;
 using DHT.Server.Database.Export;
 using DHT.Server.Database.Export.Strategy;
-using DHT.Utils.Models;
 using static DHT.Desktop.Program;
 
 namespace DHT.Desktop.Main.Pages {
-	sealed class ViewerPageModel : BaseModel, IDisposable {
+	sealed class ViewerPageModel : ObservableObject, IDisposable {
 		public static readonly ConcurrentBag<string> TemporaryFiles = new ();
 		
 		public bool DatabaseToolFilterModeKeep { get; set; } = true;
 		public bool DatabaseToolFilterModeRemove { get; set; } = false;
 
-		private bool hasFilters = false;
-
-		public bool HasFilters {
-			get => hasFilters;
-			set => Change(ref hasFilters, value);
-		}
-
 		private MessageFilterPanelModel FilterModel { get; }
+		public bool HasFilters => FilterModel.HasAnyFilters;
 
 		private readonly Window window;
 		private readonly IDatabaseFile db;
@@ -54,7 +48,7 @@ namespace DHT.Desktop.Main.Pages {
 		}
 
 		private void OnFilterPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-			HasFilters = FilterModel.HasAnyFilters;
+			OnPropertyChanged(nameof(HasFilters));
 		}
 
 		private async Task WriteViewerFile(string path, IViewerExportStrategy strategy) {

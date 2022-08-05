@@ -5,17 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DHT.Desktop.Common;
 using DHT.Desktop.Dialogs.CheckBox;
 using DHT.Desktop.Dialogs.Message;
 using DHT.Server.Data;
 using DHT.Server.Data.Filters;
 using DHT.Server.Database;
-using DHT.Utils.Models;
 using DHT.Utils.Tasks;
 
 namespace DHT.Desktop.Main.Controls {
-	sealed class MessageFilterPanelModel : BaseModel, IDisposable {
+	sealed partial class MessageFilterPanelModel : ObservableObject, IDisposable {
 		private static readonly HashSet<string> FilterProperties = new () {
 			nameof(FilterByDate),
 			nameof(StartDate),
@@ -26,68 +26,47 @@ namespace DHT.Desktop.Main.Controls {
 			nameof(IncludedUsers)
 		};
 
-		public string FilterStatisticsText { get; private set; } = "";
+		[ObservableProperty(Setter = Access.Private)]
+		private string filterStatisticsText = "";
 
 		public event PropertyChangedEventHandler? FilterPropertyChanged;
 
 		public bool HasAnyFilters => FilterByDate || FilterByChannel || FilterByUser;
 
+		[ObservableProperty]
 		private bool filterByDate = false;
+		
+		[ObservableProperty]
 		private DateTime? startDate = null;
+		
+		[ObservableProperty]
 		private DateTime? endDate = null;
+		
+		[ObservableProperty]
 		private bool filterByChannel = false;
+
 		private HashSet<ulong>? includedChannels = null;
-		private bool filterByUser = false;
-		private HashSet<ulong>? includedUsers = null;
-
-		public bool FilterByDate {
-			get => filterByDate;
-			set => Change(ref filterByDate, value);
-		}
-
-		public DateTime? StartDate {
-			get => startDate;
-			set => Change(ref startDate, value);
-		}
-
-		public DateTime? EndDate {
-			get => endDate;
-			set => Change(ref endDate, value);
-		}
-
-		public bool FilterByChannel {
-			get => filterByChannel;
-			set => Change(ref filterByChannel, value);
-		}
-
+		
 		public HashSet<ulong> IncludedChannels {
 			get => includedChannels ?? db.GetAllChannels().Select(static channel => channel.Id).ToHashSet();
-			set => Change(ref includedChannels, value);
+			set => SetProperty(ref includedChannels, value);
 		}
 
-		public bool FilterByUser {
-			get => filterByUser;
-			set => Change(ref filterByUser, value);
-		}
-
-		public HashSet<ulong> IncludedUsers {
-			get => includedUsers ?? db.GetAllUsers().Select(static user => user.Id).ToHashSet();
-			set => Change(ref includedUsers, value);
-		}
-
+		[ObservableProperty(Setter = Access.Private)]
 		private string channelFilterLabel = "";
 
-		public string ChannelFilterLabel {
-			get => channelFilterLabel;
-			set => Change(ref channelFilterLabel, value);
+		[ObservableProperty]
+		private bool filterByUser = false;
+
+		private HashSet<ulong>? includedUsers = null;
+		
+		public HashSet<ulong> IncludedUsers {
+			get => includedUsers ?? db.GetAllUsers().Select(static user => user.Id).ToHashSet();
+			set => SetProperty(ref includedUsers, value);
 		}
 
+		[ObservableProperty(Setter = Access.Private)]
 		private string userFilterLabel = "";
-
-		public string UserFilterLabel {
-			get => userFilterLabel;
-			set => Change(ref userFilterLabel, value);
-		}
 
 		private readonly Window window;
 		private readonly IDatabaseFile db;
@@ -168,9 +147,7 @@ namespace DHT.Desktop.Main.Controls {
 		private void UpdateFilterStatisticsText() {
 			var exportedMessageCountStr = exportedMessageCount?.Format() ?? "(...)";
 			var totalMessageCountStr = totalMessageCount?.Format() ?? "(...)";
-			
 			FilterStatisticsText = verb + " " + exportedMessageCountStr + " out of " + totalMessageCountStr + " message" + (totalMessageCount is null or 1 ? "." : "s.");
-			OnPropertyChanged(nameof(FilterStatisticsText));
 		}
 
 		public async void OpenChannelFilterDialog() {
@@ -208,7 +185,7 @@ namespace DHT.Desktop.Main.Controls {
 
 				items.Add(new CheckBoxItem<ulong>(channelId) {
 					Title = title,
-					Checked = included.Contains(channelId)
+					IsChecked = included.Contains(channelId)
 				});
 			}
 
@@ -228,7 +205,7 @@ namespace DHT.Desktop.Main.Controls {
 
 				items.Add(new CheckBoxItem<ulong>(user.Id) {
 					Title = discriminator == null ? name : name + " #" + discriminator,
-					Checked = included.Contains(user.Id)
+					IsChecked = included.Contains(user.Id)
 				});
 			}
 

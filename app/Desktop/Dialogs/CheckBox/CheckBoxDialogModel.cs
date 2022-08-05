@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using DHT.Utils.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DHT.Desktop.Dialogs.CheckBox {
-	class CheckBoxDialogModel : BaseModel {
+	class CheckBoxDialogModel : ObservableObject {
 		public string Title { get; init; } = "";
 
 		private IReadOnlyList<CheckBoxItem> items = Array.Empty<CheckBoxItem>();
@@ -28,8 +28,8 @@ namespace DHT.Desktop.Dialogs.CheckBox {
 
 		private bool pauseCheckEvents = false;
 
-		public bool AreAllSelected => Items.All(static item => item.Checked);
-		public bool AreNoneSelected => Items.All(static item => !item.Checked);
+		public bool AreAllSelected => Items.All(static item => item.IsChecked);
+		public bool AreNoneSelected => Items.All(static item => !item.IsChecked);
 
 		public void SelectAll() => SetAllChecked(true);
 		public void SelectNone() => SetAllChecked(false);
@@ -38,7 +38,7 @@ namespace DHT.Desktop.Dialogs.CheckBox {
 			pauseCheckEvents = true;
 
 			foreach (var item in Items) {
-				item.Checked = isChecked;
+				item.IsChecked = isChecked;
 			}
 
 			pauseCheckEvents = false;
@@ -51,7 +51,7 @@ namespace DHT.Desktop.Dialogs.CheckBox {
 		}
 
 		private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e) {
-			if (!pauseCheckEvents && e.PropertyName == nameof(CheckBoxItem.Checked)) {
+			if (!pauseCheckEvents && e.PropertyName == nameof(CheckBoxItem.IsChecked)) {
 				UpdateBulkButtons();
 			}
 		}
@@ -60,7 +60,7 @@ namespace DHT.Desktop.Dialogs.CheckBox {
 	sealed class CheckBoxDialogModel<T> : CheckBoxDialogModel {
 		public new IReadOnlyList<CheckBoxItem<T>> Items { get; }
 
-		public IEnumerable<CheckBoxItem<T>> SelectedItems => Items.Where(static item => item.Checked);
+		public IEnumerable<CheckBoxItem<T>> SelectedItems => Items.Where(static item => item.IsChecked);
 
 		public CheckBoxDialogModel(IEnumerable<CheckBoxItem<T>> items) {
 			this.Items = new List<CheckBoxItem<T>>(items);

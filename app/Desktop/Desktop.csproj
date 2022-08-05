@@ -25,6 +25,7 @@
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.16" />
     <PackageReference Include="Avalonia.Desktop" Version="0.10.16" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.16" Condition=" '$(Configuration)' == 'Debug' " />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="999.0.0-build.0.g0d941a6a62" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Server\Server.csproj" />
