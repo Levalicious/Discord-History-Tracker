@@ -1,16 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
-namespace DHT.Desktop.Main.Screens {
-	[SuppressMessage("ReSharper", "MemberCanBeInternal")]
-	public sealed class MainContentScreen : UserControl {
-		public MainContentScreen() {
-			InitializeComponent();
-		}
+namespace DHT.Desktop.Main.Screens;
 
-		private void InitializeComponent() {
-			AvaloniaXamlLoader.Load(this);
-		}
+[SuppressMessage("ReSharper", "MemberCanBeInternal")]
+public sealed partial class MainContentScreen : UserControl {
+	public MainContentScreen() {
+		InitializeComponent();
 	}
 }

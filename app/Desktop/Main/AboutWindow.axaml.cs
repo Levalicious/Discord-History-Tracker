@@ -1,20 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
-namespace DHT.Desktop.Main {
-	[SuppressMessage("ReSharper", "MemberCanBeInternal")]
-	public sealed class AboutWindow : Window {
-		public AboutWindow() {
-			InitializeComponent();
-			#if DEBUG
-			this.AttachDevTools();
-			#endif
-		}
+namespace DHT.Desktop.Main;
 
-		private void InitializeComponent() {
-			AvaloniaXamlLoader.Load(this);
-		}
+[SuppressMessage("ReSharper", "MemberCanBeInternal")]
+public sealed partial class AboutWindow : Window {
+	public AboutWindow() {
+		InitializeComponent();
 	}
 }

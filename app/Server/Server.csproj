@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>DHT.Server</RootNamespace>
     <Nullable>enable</Nullable>
     <AssemblyName>DiscordHistoryTracker.Server</AssemblyName>
@@ -20,7 +19,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.7" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.9" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Utils\Utils.csproj" />

@@ -52,9 +52,9 @@ namespace DHT.Desktop.Main.Pages {
 
 			await progressDialog.ShowDialog(window);
 		}
-		
+
 		private const int BatchSize = 500;
-		
+
 		private async Task GenerateRandomData(int channelCount, int userCount, int messageCount, IProgressCallback callback) {
 			int batchCount = (messageCount + BatchSize - 1) / BatchSize;
 			await callback.Update("Adding messages in batches of " + BatchSize, 0, batchCount);
@@ -63,7 +63,7 @@ namespace DHT.Desktop.Main.Pages {
 			var server = new DHT.Server.Data.Server {
 				Id = RandomId(rand),
 				Name = RandomName("s"),
-				Type = ServerType.Server
+				Type = ServerType.Server,
 			};
 
 			var channels = Enumerable.Range(0, channelCount).Select(i => new Channel {
@@ -73,36 +73,36 @@ namespace DHT.Desktop.Main.Pages {
 				ParentId = null,
 				Position = i,
 				Topic = RandomText(rand, 10),
-				Nsfw = rand.Next(4) == 0
+				Nsfw = rand.Next(4) == 0,
 			}).ToArray();
-			
+
 			var users = Enumerable.Range(0, userCount).Select(_ => new User {
 				Id = RandomId(rand),
 				Name = RandomName("u"),
 				AvatarUrl = null,
-				Discriminator = rand.Next(0, 9999).ToString()
+				Discriminator = rand.Next(0, 9999).ToString(),
 			}).ToArray();
-			
+
 			db.AddServer(server);
 			db.AddUsers(users);
-			
+
 			foreach (var channel in channels) {
 				db.AddChannel(channel);
 			}
-			
+
 			var now = DateTimeOffset.Now;
 			int batchIndex = 0;
-			
+
 			while (messageCount > 0) {
 				int hourOffset = batchIndex;
-				
+
 				var messages = Enumerable.Range(0, Math.Min(messageCount, BatchSize)).Select(i => {
-					DateTimeOffset time = now.AddHours(hourOffset).AddMinutes((i * 60.0) / BatchSize);
+					DateTimeOffset time = now.AddHours(hourOffset).AddMinutes(i * 60.0 / BatchSize);
 					DateTimeOffset? edit = rand.Next(100) == 0 ? time.AddSeconds(rand.Next(1, 60)) : null;
 
 					var timeMillis = time.ToUnixTimeMilliseconds();
 					var editMillis = edit?.ToUnixTimeMilliseconds();
-					
+
 					return new Message {
 						Id = (ulong) timeMillis,
 						Sender = RandomBiasedIndex(rand, users).Id,
@@ -113,12 +113,12 @@ namespace DHT.Desktop.Main.Pages {
 						RepliedToId = null,
 						Attachments = ImmutableArray<Attachment>.Empty,
 						Embeds = ImmutableArray<Embed>.Empty,
-						Reactions = ImmutableArray<Reaction>.Empty
+						Reactions = ImmutableArray<Reaction>.Empty,
 					};
 				}).ToArray();
-				
+
 				db.AddMessages(messages);
-				
+
 				messageCount -= BatchSize;
 				await callback.Update("Adding messages in batches of " + BatchSize, ++batchIndex, batchCount);
 			}
@@ -161,9 +161,9 @@ namespace DHT.Desktop.Main.Pages {
 			"vanilla",
 			"watercress", "watermelon",
 			"yam",
-			"zucchini"
+			"zucchini",
 		};
-		
+
 		private static string RandomText(Random rand, int maxWords) {
 			int wordCount = 1 + (int) Math.Floor(maxWords * Math.Pow(rand.NextDouble(), 3));
 			return string.Join(' ', Enumerable.Range(0, wordCount).Select(_ => RandomWords[rand.Next(RandomWords.Length)]));

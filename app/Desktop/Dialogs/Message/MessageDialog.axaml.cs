@@ -1,37 +1,28 @@
 using System.Diagnostics.CodeAnalysis;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 
-namespace DHT.Desktop.Dialogs.Message {
-	[SuppressMessage("ReSharper", "MemberCanBeInternal")]
-	public sealed class MessageDialog : Window {
-		public MessageDialog() {
-			InitializeComponent();
-			#if DEBUG
-			this.AttachDevTools();
-			#endif
-		}
+namespace DHT.Desktop.Dialogs.Message;
 
-		private void InitializeComponent() {
-			AvaloniaXamlLoader.Load(this);
-		}
+[SuppressMessage("ReSharper", "MemberCanBeInternal")]
+public sealed partial class MessageDialog : Window {
+	public MessageDialog() {
+		InitializeComponent();
+	}
 
-		public void ClickOk(object? sender, RoutedEventArgs e) {
-			Close(DialogResult.All.Ok);
-		}
+	public void ClickOk(object? sender, RoutedEventArgs e) {
+		Close(DialogResult.All.Ok);
+	}
 
-		public void ClickYes(object? sender, RoutedEventArgs e) {
-			Close(DialogResult.All.Yes);
-		}
+	public void ClickYes(object? sender, RoutedEventArgs e) {
+		Close(DialogResult.All.Yes);
+	}
 
-		public void ClickNo(object? sender, RoutedEventArgs e) {
-			Close(DialogResult.All.No);
-		}
+	public void ClickNo(object? sender, RoutedEventArgs e) {
+		Close(DialogResult.All.No);
+	}
 
-		public void ClickCancel(object? sender, RoutedEventArgs e) {
-			Close(DialogResult.All.Cancel);
-		}
+	public void ClickCancel(object? sender, RoutedEventArgs e) {
+		Close(DialogResult.All.Cancel);
 	}
 }
